@@ -465,30 +465,44 @@
     }
 
     function buildWhatsAppUrl() {
+    
+  
       const u = loadUser();
+  
       const pay = getSelectedRadio('pay');
+ 
       const ship = getSelectedRadio('ship');
+  
       const { total, lines } = getTotals();
-      let text = 'Hola, quiero hacer este pedido:\n';
-      text += '\n*Datos de la persona*\n';
-      text += `Nombre: ${u.name}\n`;
-      text += `Email: ${u.email}\n`;
-      text += `Teléfono: ${u.phone}\n`;
-      text += '\n*Forma de pago*\n';
-      if (pay === 'Transferencia bancaria') {
-        text += 'Transferencia bancaria (Midinero).\n';
-        text += 'Datos: Midinero – Cuenta Nº: 1984047 – Titular: A. Cabral\n';
-      } else {
-        text += 'Pago al momento de obtener el producto.\n';
-      }
-      text += '\n*Forma de entrega*\n';
-      text += `${ship}\n`;
-      text += '\n*Detalle del pedido*\n';
-      lines.forEach(l => { text += `${l}\n`; });
-      text += `\nTotal estimado: ${formatMoney(total)}`;
-      const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURI(text)}`;
-      return url;
-    }
+
+  // 1) Construimos el texto normal, con \n para saltos de línea
+  let text = 'Hola, quiero hacer este pedido:\n';
+  text += '\n*Datos de la persona*\n';
+  text += `Nombre: ${u.name}\n`;
+  text += `Email: ${u.email}\n`;
+  text += `Teléfono: ${u.phone}\n`;
+  text += '\n*Forma de pago*\n';
+  if (pay === 'Transferencia bancaria') {
+    text += 'Transferencia bancaria (Midinero).\n';
+    text += 'Datos: Midinero – Cuenta Nº: 1984047 – Titular: A. Cabral\n';
+  } else {
+    text += 'Pago al momento de obtener el producto.\n';
+  }
+  text += '\n*Forma de entrega*\n';
+  text += `${ship}\n`;
+  text += '\n*Detalle del pedido*\n';
+  lines.forEach(l => { text += `${l}\n`; });
+  text += `\nTotal estimado: ${formatMoney(total)}`;
+
+  // 2) Codificamos TODO el texto solo una vez
+  const encodedText = encodeURIComponent(text);  // CLAVE: usar encodeURIComponent [web:375][web:378][web:381][web:384]
+
+  // 3) Armamos la URL
+  const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodedText}`;
+  return url;
+}
+
+    
 
     document.addEventListener('DOMContentLoaded', () => {
       loadCart();
