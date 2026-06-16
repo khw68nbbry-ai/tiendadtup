@@ -1,0 +1,588 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tienda Facu</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --accent: #e0b7ff;
+      --accent-strong: #c48bff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .app { max-width: 1120px; margin: 0 auto; padding: 16px; }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .brand { font-size: 1.5rem; font-weight: 600; }
+    .tagline { font-size: 0.9rem; color: var(--muted); }
+    .pill { background: var(--accent); padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; }
+    .layout {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    @media (max-width: 800px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 8px 20px rgba(15,23,42,0.05);
+      border: 1px solid rgba(148,163,184,0.35);
+    }
+    .card h2 { font-size: 1rem; margin-bottom: 8px; }
+    .card-sub { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(150px,1fr));
+      gap: 10px;
+    }
+    .p {
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .p-name { font-size: 0.9rem; font-weight: 500; }
+    .p-price { font-size: 0.85rem; color: var(--text); }
+    .p-desc { font-size: 0.8rem; color: var(--muted); min-height: 32px; }
+    .p-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+    .pill-badge { font-size: 0.7rem; color: var(--muted); }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border-radius: 999px;
+      border: none;
+      font-size: 0.8rem;
+      padding: 6px 12px;
+    }
+    .btn-main {
+      background: var(--accent-strong);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(148,27,255,0.35);
+      border: 1px solid rgba(148,27,255,0.4);
+    }
+    .btn-main:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(148,163,184,0.7);
+    }
+    .btn-small { font-size: 0.75rem; padding: 4px 10px; }
+
+    .badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(148,163,184,0.15);
+      color: var(--muted);
+    }
+    .flex { display: flex; align-items: center; gap: 8px; }
+    .flex-between { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+
+    .mt-8 { margin-top: 8px; }
+    .mt-12 { margin-top: 12px; }
+    .mt-16 { margin-top: 16px; }
+    .mb-8 { margin-bottom: 8px; }
+    .mb-4 { margin-bottom: 4px; }
+
+    .text-sm { font-size: 0.8rem; }
+    .text-xs { font-size: 0.75rem; }
+    .text-muted { color: var(--muted); }
+    .text-danger { color: var(--danger); }
+
+    .divider { height: 1px; background: rgba(148,163,184,0.4); margin: 8px 0; }
+
+    .cart-list { display: flex; flex-direction: column; gap: 6px; }
+    .cart-item { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+    .cart-controls { display: flex; align-items: center; gap: 4px; }
+
+    input[type="text"],input[type="email"],input[type="tel"] {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.8);
+      font-size: 0.8rem;
+    }
+    input:focus {
+      outline: none;
+      border-color: var(--accent-strong);
+      box-shadow: 0 0 0 1px rgba(196,139,255,0.4);
+    }
+    .field-label { font-size: 0.8rem; margin-bottom: 3px; }
+    .section-title { font-size: 0.9rem; font-weight: 500; margin-bottom: 4px; }
+    .option-row { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 4px; }
+    .option-row label { font-size: 0.8rem; cursor: pointer; }
+    .hint { font-size: 0.7rem; color: var(--muted); }
+    .error { font-size: 0.75rem; color: var(--danger); margin-top: 4px; }
+    .chip { padding: 2px 6px; border-radius: 999px; background: rgba(148,163,184,0.1); font-size: 0.7rem; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <div class="brand">Tienda Facu</div>
+        <div class="tagline">Detalles cuidados, compras simples</div>
+      </div>
+      <div class="flex">
+        <span id="userSummary" class="pill text-sm">Sin datos guardados</span>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Columna izquierda: catálogo y pasos -->
+      <div class="card">
+        <div class="flex-between mb-8">
+          <div class="flex">
+            <span class="badge">Paso <span id="stepLabel">1</span> de 3</span>
+            <span class="text-xs text-muted" id="stepText">Elegí tus productos</span>
+          </div>
+          <button class="btn-ghost btn-small" id="resetAll">Reiniciar todo</button>
+        </div>
+
+        <div id="step1">
+          <h2>Catálogo</h2>
+          <p class="card-sub">Agregá lo que quieras al carrito. Podés ajustar cantidades después.</p>
+          <div class="products" id="productsGrid"></div>
+        </div>
+
+        <div id="step2" style="display:none;">
+          <h2>Tus datos</h2>
+          <p class="card-sub">Los usamos solo para coordinar tu pedido.</p>
+          <div class="mt-8">
+            <div class="mb-4">
+              <div class="field-label">Nombre y apellido</div>
+              <input type="text" id="fName" placeholder="Ej: Ana Cabral" />
+            </div>
+            <div class="mb-4">
+              <div class="field-label">Email</div>
+              <input type="email" id="fEmail" placeholder="Ej: facu@example.com" />
+            </div>
+            <div class="mb-4">
+              <div class="field-label">Teléfono</div>
+              <input type="tel" id="fPhone" placeholder="Ej: 09X XXX XXX" />
+            </div>
+            <div id="userError" class="error" style="display:none;"></div>
+            <div class="mt-8 flex-between">
+              <button class="btn-ghost btn-small" id="backTo1">Volver al catálogo</button>
+              <button class="btn-main" id="saveUser">Guardar y continuar</button>
+            </div>
+            <p class="hint mt-8">Tus datos quedan guardados en este dispositivo para próximos pedidos.</p>
+          </div>
+        </div>
+
+        <div id="step3" style="display:none;">
+          <h2>Cómo querés pagar y recibir</h2>
+          <p class="card-sub">Elegí una forma de pago y una forma de entrega para continuar.</p>
+
+          <div class="mt-8">
+            <div class="section-title">Forma de pago</div>
+            <div class="option-row">
+              <input type="radio" name="pay" id="payEntrega" value="Pago al momento de obtener el producto" />
+              <label for="payEntrega">Pago al momento de obtener el producto</label>
+            </div>
+            <div class="option-row">
+              <input type="radio" name="pay" id="payTransfer" value="Transferencia bancaria" />
+              <label for="payTransfer">
+                Transferencia bancaria
+                <div class="hint">Midinero – Cuenta Nº: 1984047 – Titular: A. Cabral</div>
+              </label>
+            </div>
+            <div id="payError" class="error" style="display:none;"></div>
+          </div>
+
+          <div class="mt-12">
+            <div class="section-title">Forma de entrega</div>
+            <div class="option-row">
+              <input type="radio" name="ship" id="shipSayago" value="Retiro en Sayago" />
+              <label for="shipSayago">
+                Retiro en Sayago
+                <div class="hint">La dirección se enviará por WhatsApp una vez confirmado el pedido.</div>
+              </label>
+            </div>
+            <div class="option-row">
+              <input type="radio" name="ship" id="shipEnvio" value="Coordinar envío con costo según la zona" />
+              <label for="shipEnvio">
+                Coordinar envío con costo según la zona
+                <div class="hint">El envío se coordina por WhatsApp luego de realizar el pedido.</div>
+              </label>
+            </div>
+            <div id="shipError" class="error" style="display:none;"></div>
+          </div>
+
+          <div class="mt-12">
+            <div class="section-title">Resumen rápido</div>
+            <p class="text-xs text-muted" id="summaryPreview"></p>
+          </div>
+
+          <div class="mt-12 flex-between">
+            <button class="btn-ghost btn-small" id="backTo2">Volver a tus datos</button>
+            <button class="btn-main" id="finalizar">Finalizar pedido por WhatsApp</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna derecha: carrito y resumen -->
+      <div class="card">
+        <div class="flex-between mb-8">
+          <h2>Tu carrito</h2>
+          <span class="chip" id="cartCount">0 productos</span>
+        </div>
+        <div id="cartEmpty" class="text-sm text-muted">
+          Todavía no agregaste nada. Elegí algo del catálogo para empezar.
+        </div>
+        <div id="cartList" class="cart-list"></div>
+        <div class="divider mt-8"></div>
+        <div class="flex-between mt-8">
+          <span class="text-sm text-muted">Total estimado</span>
+          <span id="cartTotal" class="text-sm">$ 0</span>
+        </div>
+        <div class="mt-12 flex-between">
+          <button class="btn-ghost btn-small" id="clearCart">Vaciar carrito</button>
+          <button class="btn-main" id="goStep2">Continuar</button>
+        </div>
+        <p class="hint mt-8">
+          El total final puede ajustar centavos según promociones o acuerdos por WhatsApp.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const WHATSAPP_PHONE = '59897789982';
+
+    const products = [
+      { id: 1, name: 'Producto de ejemplo 1', price: 350, description: 'Descripción breve para que el cliente entienda qué está comprando.', category: 'Destacados' },
+      { id: 2, name: 'Producto de ejemplo 2', price: 520, description: 'Podés editar este texto a lo que vendas realmente.', category: 'Destacados' },
+      { id: 3, name: 'Producto de ejemplo 3', price: 890, description: 'Agregá más productos duplicando el formato.', category: 'Novedades' },
+    ];
+
+    let cart = [];
+
+    function loadCart() {
+      try {
+        const raw = localStorage.getItem('tf_cart');
+        if (raw) cart = JSON.parse(raw) || [];
+      } catch (e) {
+        cart = [];
+      }
+    }
+
+    function saveCart() {
+      localStorage.setItem('tf_cart', JSON.stringify(cart));
+    }
+
+    function formatMoney(n) {
+      return '$ ' + n.toLocaleString('es-UY');
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = '';
+      products.forEach(p => {
+        const el = document.createElement('div');
+        el.className = 'p';
+        el.innerHTML = `
+          <div class="p-name">${p.name}</div>
+          <div class="p-price">${formatMoney(p.price)}</div>
+          <div class="p-desc">${p.description}</div>
+          <div class="p-actions">
+            <span class="pill-badge">${p.category}</span>
+            <button class="btn-main btn-small" data-add="${p.id}">Agregar</button>
+          </div>
+        `;
+        grid.appendChild(el);
+      });
+    }
+
+    function syncCartUI() {
+      const list = document.getElementById('cartList');
+      const empty = document.getElementById('cartEmpty');
+      const count = document.getElementById('cartCount');
+      const totalEl = document.getElementById('cartTotal');
+      list.innerHTML = '';
+      if (!cart.length) {
+        empty.style.display = 'block';
+        count.textContent = '0 productos';
+        totalEl.textContent = '$ 0';
+        return;
+      }
+      empty.style.display = 'none';
+      let total = 0;
+      cart.forEach(item => {
+        const p = products.find(x => x.id === item.id);
+        if (!p) return;
+        const line = document.createElement('div');
+        line.className = 'cart-item';
+        const lineTotal = p.price * item.qty;
+        total += lineTotal;
+        line.innerHTML = `
+          <div class="text-sm">
+            <div>${p.name}</div>
+            <div class="text-xs text-muted">${formatMoney(p.price)} c/u</div>
+          </div>
+          <div class="cart-controls">
+            <button class="btn-ghost btn-small" data-dec="${p.id}">-</button>
+            <span class="text-sm">${item.qty}</span>
+            <button class="btn-ghost btn-small" data-inc="${p.id}">+</button>
+            <button class="btn-ghost btn-small" data-del="${p.id}">✕</button>
+            <span class="text-sm">${formatMoney(lineTotal)}</span>
+          </div>
+        `;
+        list.appendChild(line);
+      });
+      count.textContent = cart.length + (cart.length === 1 ? ' producto' : ' productos');
+      totalEl.textContent = formatMoney(total);
+      updateSummaryPreview();
+    }
+
+    function addToCart(id) {
+      const existing = cart.find(x => x.id === id);
+      if (existing) existing.qty += 1;
+      else cart.push({ id, qty: 1 });
+      saveCart();
+      syncCartUI();
+    }
+
+    function changeQty(id, delta) {
+      const item = cart.find(x => x.id === id);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
+      saveCart();
+      syncCartUI();
+    }
+
+    function deleteFromCart(id) {
+      cart = cart.filter(x => x.id !== id);
+      saveCart();
+      syncCartUI();
+    }
+
+    function clearCart() {
+      cart = [];
+      saveCart();
+      syncCartUI();
+    }
+
+    function loadUser() {
+      try {
+        const raw = localStorage.getItem('tf_user');
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function saveUser(u) {
+      localStorage.setItem('tf_user', JSON.stringify(u));
+      updateUserSummary();
+    }
+
+    function updateUserSummary() {
+      const s = document.getElementById('userSummary');
+      const u = loadUser();
+      if (!u) {
+        s.textContent = 'Sin datos guardados';
+        return;
+      }
+      s.textContent = `${u.name} · ${u.email}`;
+    }
+
+    function setStep(step) {
+      document.getElementById('step1').style.display = step === 1 ? 'block' : 'none';
+      document.getElementById('step2').style.display = step === 2 ? 'block' : 'none';
+      document.getElementById('step3').style.display = step === 3 ? 'block' : 'none';
+      document.getElementById('stepLabel').textContent = step;
+      const text = document.getElementById('stepText');
+      if (step === 1) text.textContent = 'Elegí tus productos';
+      if (step === 2) text.textContent = 'Completá tus datos';
+      if (step === 3) text.textContent = 'Elegí cómo pagar y recibir';
+    }
+
+    function getTotals() {
+      let total = 0;
+      const lines = [];
+      cart.forEach(item => {
+        const p = products.find(x => x.id === item.id);
+        if (!p) return;
+        const lineTotal = p.price * item.qty;
+        total += lineTotal;
+        lines.push(`${item.qty} x ${p.name} (${formatMoney(lineTotal)})`);
+      });
+      return { total, lines };
+    }
+
+    function updateSummaryPreview() {
+      const prev = document.getElementById('summaryPreview');
+      const u = loadUser();
+      const { total } = getTotals();
+      const hasCart = cart.length > 0;
+      const parts = [];
+      if (hasCart) parts.push(`Total estimado: ${formatMoney(total)}`);
+      if (u) parts.push(`Cliente: ${u.name}`);
+      prev.textContent = parts.join(' · ');
+    }
+
+    function getSelectedRadio(name) {
+      const nodes = document.querySelectorAll(`input[name="${name}"]`);
+      for (const n of nodes) if (n.checked) return n.value;
+      return null;
+    }
+
+    function buildWhatsAppUrl() {
+      const u = loadUser();
+      const pay = getSelectedRadio('pay');
+      const ship = getSelectedRadio('ship');
+      const { total, lines } = getTotals();
+      let text = 'Hola, quiero hacer este pedido:%0A';
+      text += '%0A*Datos de la persona*%0A';
+      text += `Nombre: ${u.name}%0A`;
+      text += `Email: ${u.email}%0A`;
+      text += `Teléfono: ${u.phone}%0A`;
+      text += '%0A*Forma de pago*%0A';
+      if (pay === 'Transferencia bancaria') {
+        text += 'Transferencia bancaria (Midinero).%0A';
+        text += 'Datos: Midinero – Cuenta Nº: 1984047 – Titular: A. Cabral%0A';
+      } else {
+        text += 'Pago al momento de obtener el producto.%0A';
+      }
+      text += '%0A*Forma de entrega*%0A';
+      text += `${ship}%0A`;
+      text += '%0A*Detalle del pedido*%0A';
+      lines.forEach(l => { text += `${l}%0A`; });
+      text += `%0ATotal estimado: ${formatMoney(total)}`;
+      const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURI(text)}`;
+      return url;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCart();
+      renderProducts();
+      syncCartUI();
+      updateUserSummary();
+
+      document.getElementById('productsGrid').addEventListener('click', e => {
+        const id = e.target.getAttribute('data-add');
+        if (id) addToCart(parseInt(id));
+      });
+
+      document.getElementById('cartList').addEventListener('click', e => {
+        const inc = e.target.getAttribute('data-inc');
+        const dec = e.target.getAttribute('data-dec');
+        const del = e.target.getAttribute('data-del');
+        if (inc) changeQty(parseInt(inc), 1);
+        if (dec) changeQty(parseInt(dec), -1);
+        if (del) deleteFromCart(parseInt(del));
+      });
+
+      document.getElementById('clearCart').addEventListener('click', () => {
+        if (confirm('¿Vaciar todo el carrito?')) clearCart();
+      });
+
+      document.getElementById('resetAll').addEventListener('click', () => {
+        if (!confirm('Esto vacía el carrito y borra tus datos guardados en este dispositivo. ¿Seguro?')) return;
+        clearCart();
+        localStorage.removeItem('tf_user');
+        updateUserSummary();
+        setStep(1);
+      });
+
+      document.getElementById('goStep2').addEventListener('click', () => {
+        if (!cart.length) { alert('Agregá al menos un producto al carrito antes de continuar.'); return; }
+        const u = loadUser();
+        if (u) {
+          setStep(3);
+        } else {
+          setStep(2);
+        }
+      });
+
+      document.getElementById('backTo1').addEventListener('click', () => setStep(1));
+      document.getElementById('backTo2').addEventListener('click', () => setStep(2));
+
+      document.getElementById('saveUser').addEventListener('click', () => {
+        const name = document.getElementById('fName').value.trim();
+        const email = document.getElementById('fEmail').value.trim();
+        const phone = document.getElementById('fPhone').value.trim();
+        const err = document.getElementById('userError');
+        err.style.display = 'none';
+        if (!name || !email || !phone) {
+          err.textContent = 'Completá nombre, email y teléfono para continuar.';
+          err.style.display = 'block';
+          return;
+        }
+        saveUser({ name, email, phone });
+        setStep(3);
+      });
+
+      const u = loadUser();
+      if (u) {
+        document.getElementById('fName').value = u.name;
+        document.getElementById('fEmail').value = u.email;
+        document.getElementById('fPhone').value = u.phone;
+      }
+
+      document.getElementById('finalizar').addEventListener('click', () => {
+        const u2 = loadUser();
+        if (!cart.length) { alert('Tu carrito está vacío. Agregá algo antes de finalizar.'); return; }
+        if (!u2) { setStep(2); return; }
+        const pay = getSelectedRadio('pay');
+        const ship = getSelectedRadio('ship');
+        let ok = true;
+        const payErr = document.getElementById('payError');
+        const shipErr = document.getElementById('shipError');
+        payErr.style.display = 'none';
+        shipErr.style.display = 'none';
+        if (!pay) {
+          payErr.textContent = 'Elegí una forma de pago para continuar.';
+          payErr.style.display = 'block';
+          ok = false;
+        }
+        if (!ship) {
+          shipErr.textContent = 'Elegí una forma de entrega para continuar.';
+          shipErr.style.display = 'block';
+          ok = false;
+        }
+        if (!ok) return;
+        const url = buildWhatsAppUrl();
+        window.open(url, '_blank');
+      });
+    });
+  </script>
+</body>
+</html>
