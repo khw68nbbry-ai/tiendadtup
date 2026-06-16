@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tienda Facu</title>
+  <title>Un Poco De Todo</title>
   <style>
     :root {
       --bg: #f8fafc;
@@ -155,8 +155,8 @@
   <div class="app">
     <header>
       <div>
-        <div class="brand">Tienda Facu</div>
-        <div class="tagline">Detalles cuidados, compras simples</div>
+        <div class="brand">Un Poco De Todo</div>
+        <div class="tagline">Variedad de indumentaria, a tu medida.</div>
       </div>
       <div class="flex">
         <span id="userSummary" class="pill text-sm">Sin datos guardados</span>
@@ -471,21 +471,21 @@
       const { total, lines } = getTotals();
       let text = 'Hola, quiero hacer este pedido:%0A';
       text += '%0A*Datos de la persona*%0A';
-      text += `Nombre: ${u.name}%0A`;
-      text += `Email: ${u.email}%0A`;
-      text += `Teléfono: ${u.phone}%0A`;
-      text += '%0A*Forma de pago*%0A';
+      text += `Nombre: ${u.name}\n`;
+      text += `Email: ${u.email}\n`;
+      text += `Teléfono: ${u.phone}\n`;
+      text += '%0A*Forma de pago*\n';
       if (pay === 'Transferencia bancaria') {
-        text += 'Transferencia bancaria (Midinero).%0A';
-        text += 'Datos: Midinero – Cuenta Nº: 1984047 – Titular: A. Cabral%0A';
+        text += 'Transferencia bancaria (Midinero).\n';
+        text += 'Datos: Midinero – Cuenta Nº: 1984047 – Titular: A. Cabral\n';
       } else {
-        text += 'Pago al momento de obtener el producto.%0A';
+        text += 'Pago al momento de obtener el producto.\n';
       }
-      text += '%0A*Forma de entrega*%0A';
-      text += `${ship}%0A`;
-      text += '%0A*Detalle del pedido*%0A';
-      lines.forEach(l => { text += `${l}%0A`; });
-      text += `%0ATotal estimado: ${formatMoney(total)}`;
+      text += '\n*Forma de entrega*\n';
+      text += `${ship}\n`;
+      text += '\n*Detalle del pedido*\n';
+      lines.forEach(l => { text += `${l}\n`; });
+      text += `\nTotal estimado: ${formatMoney(total)}`;
       const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURI(text)}`;
       return url;
     }
