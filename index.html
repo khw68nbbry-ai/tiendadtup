@@ -469,12 +469,12 @@
       const pay = getSelectedRadio('pay');
       const ship = getSelectedRadio('ship');
       const { total, lines } = getTotals();
-      let text = 'Hola, quiero hacer este pedido:%0A';
-      text += '%0A*Datos de la persona*%0A';
+      let text = 'Hola, quiero hacer este pedido:\n';
+      text += '\n*Datos de la persona*\n';
       text += `Nombre: ${u.name}\n`;
       text += `Email: ${u.email}\n`;
       text += `Teléfono: ${u.phone}\n`;
-      text += '%0A*Forma de pago*\n';
+      text += '\n*Forma de pago*\n';
       if (pay === 'Transferencia bancaria') {
         text += 'Transferencia bancaria (Midinero).\n';
         text += 'Datos: Midinero – Cuenta Nº: 1984047 – Titular: A. Cabral\n';
